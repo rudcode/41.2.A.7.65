@@ -56,7 +56,7 @@ unsigned long cma_get_size(const struct cma *cma)
 }
 
 static unsigned long cma_bitmap_aligned_mask(const struct cma *cma,
-					     unsigned int align_order)
+					     int align_order)
 {
 	if (align_order <= cma->order_per_bit)
 		return 0;
@@ -67,7 +67,8 @@ static unsigned long cma_bitmap_aligned_mask(const struct cma *cma,
  * Find a PFN aligned to the specified order and return an offset represented in
  * order_per_bits.
  */
-static unsigned long cma_bitmap_aligned_offset(struct cma *cma, int align_order)
+static unsigned long cma_bitmap_aligned_offset(const struct cma *cma,
+					       int align_order)
 {
 	if (align_order <= cma->order_per_bit)
 		return 0;
@@ -371,7 +372,11 @@ err:
  * This function allocates part of contiguous memory on specific
  * contiguous memory area.
  */
+<<<<<<< HEAD
 struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align)
+=======
+struct page *cma_alloc(struct cma *cma, unsigned int count, unsigned int align)
+>>>>>>> mm: cma: constify and use correct signness in mm/cma.c
 {
 	unsigned long mask, offset, pfn, start = 0;
 	unsigned long bitmap_maxno, bitmap_no, bitmap_count;
