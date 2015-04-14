@@ -42,6 +42,9 @@
 			vendor {
 				status = "disabled";
 			};
+			system {
+				fsmgr_flags = "wait";
+			};
 		};
 	};
 };
