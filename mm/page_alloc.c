@@ -2339,9 +2339,11 @@ static DEFINE_RATELIMIT_STATE(nopage_rs,
 		DEFAULT_RATELIMIT_INTERVAL,
 		DEFAULT_RATELIMIT_BURST);
 
-void warn_alloc_failed(gfp_t gfp_mask, unsigned int order, const char *fmt, ...)
+void warn_alloc(gfp_t gfp_mask, const char *fmt, ...)
 {
 	unsigned int filter = SHOW_MEM_FILTER_NODES;
+	struct va_format vaf;
+	va_list args;
 
 	if ((gfp_mask & __GFP_NOWARN) || !__ratelimit(&nopage_rs) ||
 	    debug_guardpage_minorder() > 0)
@@ -2359,24 +2361,16 @@ void warn_alloc_failed(gfp_t gfp_mask, unsigned int order, const char *fmt, ...)
 	if (in_interrupt() || !(gfp_mask & __GFP_WAIT))
 		filter &= ~SHOW_MEM_FILTER_NODES;
 
-	if (fmt) {
-		struct va_format vaf;
-		va_list args;
+	pr_warn("%s: ", current->comm);
 
-		va_start(args, fmt);
+	va_start(args, fmt);
+	vaf.fmt = fmt;
+	vaf.va = &args;
+	pr_cont("%pV", &vaf);
+	va_end(args);
 
-		vaf.fmt = fmt;
-		vaf.va = &args;
+	pr_cont(", mode:%#x(%pGg)\n", gfp_mask, &gfp_mask);
 
-		pr_warn("%pV", &vaf);
-
-		va_end(args);
-	}
-
-	pr_warn("%s: page allocation failure: order:%u, mode:0x%x\n",
-		current->comm, order, gfp_mask);
-
-	trace_mm_page_alloc_fail(order);
 	dump_stack();
 	if (!should_suppress_show_mem())
 		show_mem(filter);
@@ -2981,7 +2975,8 @@ rebalance:
 	}
 
 nopage:
-	warn_alloc_failed(gfp_mask, order, NULL);
+	warn_alloc(gfp_mask,
+			"page allocation failure: order:%u", order);
 	return page;
 got_pg:
 	if (kmemcheck_enabled)
