@@ -490,10 +490,9 @@ overflow:
 		}
 	}
 
-	if (printk_ratelimit())
-		printk(KERN_WARNING
-			"vmap allocation for size %lu failed: "
-			"use vmalloc=<size> to increase size.\n", size);
+	if (!(gfp_mask & __GFP_NOWARN) && printk_ratelimit())
+		pr_warn("vmap allocation for size %lu failed: use vmalloc=<size> to increase size\n",
+			size);
 	kfree(va);
 	return ERR_PTR(-EBUSY);
 }
