@@ -137,9 +137,7 @@ static void recalculate_apic_map(struct kvm *kvm)
 	struct kvm_vcpu *vcpu;
 	int i;
 
-	new = kzalloc(sizeof(struct kvm_apic_map), GFP_KERNEL);
-
-	mutex_lock(&kvm->arch.apic_map_lock);
+	new = kvzalloc(sizeof(struct kvm_apic_map), GFP_KERNEL);
 
 	if (!new)
 		goto out;
