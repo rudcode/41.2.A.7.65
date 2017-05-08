@@ -7448,7 +7448,7 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *free,
 
 	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
 		if (!dont || free->arch.rmap[i] != dont->arch.rmap[i]) {
-			kvm_kvfree(free->arch.rmap[i]);
+			kvfree(free->arch.rmap[i]);
 			free->arch.rmap[i] = NULL;
 		}
 		if (i == 0)
@@ -7456,7 +7456,7 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *free,
 
 		if (!dont || free->arch.lpage_info[i - 1] !=
 			     dont->arch.lpage_info[i - 1]) {
-			kvm_kvfree(free->arch.lpage_info[i - 1]);
+			kvfree(free->arch.lpage_info[i - 1]);
 			free->arch.lpage_info[i - 1] = NULL;
 		}
 	}
@@ -7476,14 +7476,14 @@ int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
 				      slot->base_gfn, level) + 1;
 
 		slot->arch.rmap[i] =
-			kvm_kvzalloc(lpages * sizeof(*slot->arch.rmap[i]));
+			kvzalloc(lpages * sizeof(*slot->arch.rmap[i]), GFP_KERNEL);
 		if (!slot->arch.rmap[i])
 			goto out_free;
 		if (i == 0)
 			continue;
 
-		slot->arch.lpage_info[i - 1] = kvm_kvzalloc(lpages *
-					sizeof(*slot->arch.lpage_info[i - 1]));
+		slot->arch.lpage_info[i - 1] = kvzalloc(lpages *
+					sizeof(*slot->arch.lpage_info[i - 1]), GFP_KERNEL);
 		if (!slot->arch.lpage_info[i - 1])
 			goto out_free;
 
@@ -7510,12 +7510,12 @@ int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
 
 out_free:
 	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-		kvm_kvfree(slot->arch.rmap[i]);
+		kvfree(slot->arch.rmap[i]);
 		slot->arch.rmap[i] = NULL;
 		if (i == 0)
 			continue;
 
-		kvm_kvfree(slot->arch.lpage_info[i - 1]);
+		kvfree(slot->arch.lpage_info[i - 1]);
 		slot->arch.lpage_info[i - 1] = NULL;
 	}
 	return -ENOMEM;

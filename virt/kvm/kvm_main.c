@@ -490,7 +490,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
 	BUILD_BUG_ON(KVM_MEM_SLOTS_NUM > SHRT_MAX);
 
 	r = -ENOMEM;
-	kvm->memslots = kvm_kvzalloc(sizeof(struct kvm_memslots));
+	kvm->memslots = kvzalloc(sizeof(struct kvm_memslots), GFP_KERNEL);
 	if (!kvm->memslots)
 		goto out_err_no_srcu;
 
@@ -537,32 +537,12 @@ out_err_no_disable:
 	return ERR_PTR(r);
 }
 
-/*
- * Avoid using vmalloc for a small buffer.
- * Should not be used when the size is statically known.
- */
-void *kvm_kvzalloc(unsigned long size)
-{
-	if (size > PAGE_SIZE)
-		return vzalloc(size);
-	else
-		return kzalloc(size, GFP_KERNEL);
-}
-
-void kvm_kvfree(const void *addr)
-{
-	if (is_vmalloc_addr(addr))
-		vfree(addr);
-	else
-		kfree(addr);
-}
-
 static void kvm_destroy_dirty_bitmap(struct kvm_memory_slot *memslot)
 {
 	if (!memslot->dirty_bitmap)
 		return;
 
-	kvm_kvfree(memslot->dirty_bitmap);
+	kvfree(memslot->dirty_bitmap);
 	memslot->dirty_bitmap = NULL;
 }
 
@@ -667,7 +647,7 @@ static int kvm_create_dirty_bitmap(struct kvm_memory_slot *memslot)
 {
 	unsigned long dirty_bytes = 2 * kvm_dirty_bitmap_bytes(memslot);
 
-	memslot->dirty_bitmap = kvm_kvzalloc(dirty_bytes);
+	memslot->dirty_bitmap = kvzalloc(dirty_bytes, GFP_KERNEL);
 	if (!memslot->dirty_bitmap)
 		return -ENOMEM;
 
@@ -873,7 +853,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
 	}
 
 	if ((change == KVM_MR_DELETE) || (change == KVM_MR_MOVE)) {
-		slots = kvm_kvzalloc(sizeof(struct kvm_memslots));
+		slots = kvzalloc(sizeof(struct kvm_memslots), GFP_KERNEL);
 		if (!slots)
 			goto out_free;
 		memcpy(slots, kvm->memslots, sizeof(struct kvm_memslots));
@@ -907,7 +887,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
 	 * will get overwritten by update_memslots anyway.
 	 */
 	if (!slots) {
-		slots = kvm_kvzalloc(sizeof(struct kvm_memslots));
+		slots = kvzalloc(sizeof(struct kvm_memslots), GFP_KERNEL);
 		if (!slots)
 			goto out_free;
 		memcpy(slots, kvm->memslots, sizeof(struct kvm_memslots));
