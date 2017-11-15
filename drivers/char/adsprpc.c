@@ -1329,6 +1329,7 @@ static void fastrpc_smd_read_handler(int cid)
 {
 	struct fastrpc_apps *me = &gfa;
 	struct smq_invoke_rsp rsp = {0};
+	struct smq_invoke_ctx *ctx;
 	int ret = 0, err = 0;
 	uint32_t index;
 
@@ -1337,6 +1338,7 @@ static void fastrpc_smd_read_handler(int cid)
 					sizeof(rsp));
 		if (ret != sizeof(rsp))
 			break;
+
 		index = (uint32_t)((rsp.ctx & FASTRPC_CTXID_MASK) >> 4);
 		VERIFY(err, index < FASTRPC_CTX_MAX);
 		if (err)
@@ -1352,8 +1354,13 @@ static void fastrpc_smd_read_handler(int cid)
 			goto bail;
 
 		context_notify_user(me->ctxtable[index], rsp.retval);
-	} while (ret == sizeof(rsp));
 
+		ctx = (struct smq_invoke_ctx *)(uint64_to_ptr(rsp.ctx));
+		VERIFY(err, (ctx && ctx->magic == FASTRPC_CTX_MAGIC));
+		if (err)
+			goto bail;
+		context_notify_user(uint64_to_ptr(rsp.ctx), rsp.retval);
+	} while (ret == sizeof(rsp));
 bail:
 	if (err)
 			pr_err("adsprpc: invalid response or context\n");
@@ -1919,8 +1926,9 @@ static void fastrpc_glink_notify_rx(void *handle, const void *priv,
 {
 	struct smq_invoke_rsp *rsp = (struct smq_invoke_rsp *)ptr;
 	struct fastrpc_apps *me = &gfa;
-	uint32_t index;
+	struct smq_invoke_ctx *ctx;
 	int err = 0;
+	uint32_t index;
 
 	VERIFY(err, (rsp && size >= sizeof(*rsp)));
 	if (err)
@@ -1941,6 +1949,13 @@ static void fastrpc_glink_notify_rx(void *handle, const void *priv,
 		goto bail;
 
 	context_notify_user(me->ctxtable[index], rsp->retval);
+	
+	ctx = (struct smq_invoke_ctx *)(uint64_to_ptr(rsp->ctx));
+	VERIFY(err, (ctx && ctx->magic == FASTRPC_CTX_MAGIC));
+	if (err)
+		goto bail;
+
+	context_notify_user(ctx, rsp->retval);
 bail:
 	if (err)
 		pr_err("adsprpc: invalid response or context\n");
