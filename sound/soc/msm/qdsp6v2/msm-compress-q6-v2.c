@@ -1381,8 +1381,10 @@ static int msm_compr_playback_open(struct snd_compr_stream *cstream)
 			__func__);
 		kfree(pdata->audio_effects[rtd->dai_link->be_id]);
 		pdata->audio_effects[rtd->dai_link->be_id] = NULL;
+
 		kfree(pdata->sony_hweffect[rtd->dai_link->be_id]);
 		pdata->sony_hweffect[rtd->dai_link->be_id] = NULL;
+
 		pdata->cstream[rtd->dai_link->be_id] = NULL;
 		kfree(prtd);
 		return -ENOMEM;
@@ -1427,16 +1429,18 @@ static int msm_compr_playback_open(struct snd_compr_stream *cstream)
 	populate_codec_list(prtd);
 	prtd->audio_client = q6asm_audio_client_alloc(
 				(app_cb)compr_event_handler, prtd);
-	if (!prtd->audio_client) {
+	if (prtd->audio_client == NULL) {
 		pr_err("%s: Could not allocate memory for client\n", __func__);
 		kfree(pdata->audio_effects[rtd->dai_link->be_id]);
 		pdata->audio_effects[rtd->dai_link->be_id] = NULL;
+
 		kfree(pdata->sony_hweffect[rtd->dai_link->be_id]);
 		pdata->sony_hweffect[rtd->dai_link->be_id] = NULL;
+
 		kfree(pdata->dec_params[rtd->dai_link->be_id]);
 		pdata->cstream[rtd->dai_link->be_id] = NULL;
-		runtime->private_data = NULL;
 		kfree(prtd);
+		runtime->private_data = NULL;
 		return -ENOMEM;
 	}
 	pr_debug("%s: session ID %d\n", __func__, prtd->audio_client->session);
@@ -1603,10 +1607,12 @@ static int msm_compr_playback_free(struct snd_compr_stream *cstream)
 		kfree(pdata->audio_effects[soc_prtd->dai_link->be_id]);
 		pdata->audio_effects[soc_prtd->dai_link->be_id] = NULL;
 	}
+
 	if (pdata->sony_hweffect[soc_prtd->dai_link->be_id] != NULL) {
 		kfree(pdata->sony_hweffect[soc_prtd->dai_link->be_id]);
 		pdata->sony_hweffect[soc_prtd->dai_link->be_id] = NULL;
 	}
+
 	if (pdata->dec_params[soc_prtd->dai_link->be_id] != NULL) {
 		kfree(pdata->dec_params[soc_prtd->dai_link->be_id]);
 		pdata->dec_params[soc_prtd->dai_link->be_id] = NULL;
