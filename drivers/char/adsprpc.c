@@ -256,7 +256,6 @@ struct fastrpc_file {
 	int cid;
 	int ssrcount;
 	struct fastrpc_apps *apps;
-	struct mutex map_mutex;
 };
 
 static struct fastrpc_apps gfa;
@@ -1329,7 +1328,6 @@ static void fastrpc_smd_read_handler(int cid)
 {
 	struct fastrpc_apps *me = &gfa;
 	struct smq_invoke_rsp rsp = {0};
-	struct smq_invoke_ctx *ctx;
 	int ret = 0, err = 0;
 	uint32_t index;
 
@@ -1338,7 +1336,6 @@ static void fastrpc_smd_read_handler(int cid)
 					sizeof(rsp));
 		if (ret != sizeof(rsp))
 			break;
-
 		index = (uint32_t)((rsp.ctx & FASTRPC_CTXID_MASK) >> 4);
 		VERIFY(err, index < FASTRPC_CTX_MAX);
 		if (err)
@@ -1354,13 +1351,8 @@ static void fastrpc_smd_read_handler(int cid)
 			goto bail;
 
 		context_notify_user(me->ctxtable[index], rsp.retval);
-
-		ctx = (struct smq_invoke_ctx *)(uint64_to_ptr(rsp.ctx));
-		VERIFY(err, (ctx && ctx->magic == FASTRPC_CTX_MAGIC));
-		if (err)
-			goto bail;
-		context_notify_user(uint64_to_ptr(rsp.ctx), rsp.retval);
 	} while (ret == sizeof(rsp));
+
 bail:
 	if (err)
 			pr_err("adsprpc: invalid response or context\n");
@@ -1768,8 +1760,6 @@ static int fastrpc_internal_munmap(struct fastrpc_file *fl,
 {
 	int err = 0;
 	struct fastrpc_mmap *map = NULL;
-
-	mutex_lock(&fl->map_mutex);
 	if (!fastrpc_mmap_remove(fl, ud->vaddrout, ud->size,
 				 &map)) {
 		VERIFY(err, !fastrpc_munmap_on_dsp(fl, map));
@@ -1780,7 +1770,6 @@ static int fastrpc_internal_munmap(struct fastrpc_file *fl,
 bail:
 	if (err && map)
 		fastrpc_mmap_add(map);
-	mutex_unlock(&fl->map_mutex);
 	return err;
 }
 
@@ -1790,13 +1779,9 @@ static int fastrpc_internal_mmap(struct fastrpc_file *fl,
 
 	struct fastrpc_mmap *map = NULL;
 	int err = 0;
-
-	mutex_lock(&fl->map_mutex);
 	if (!fastrpc_mmap_find(fl, ud->fd, (uintptr_t)ud->vaddrin, ud->size,
-			       ud->flags, &map)){
-		mutex_unlock(&fl->map_mutex);
+			       ud->flags, &map))
 		return 0;
-	}
 
 	VERIFY(err, !fastrpc_mmap_create(fl, ud->fd, (uintptr_t)ud->vaddrin,
 					 ud->size, ud->flags, &map));
@@ -1809,7 +1794,6 @@ static int fastrpc_internal_mmap(struct fastrpc_file *fl,
  bail:
 	if (err && map)
 		fastrpc_mmap_free(map);
-	mutex_unlock(&fl->map_mutex);
 	return err;
 }
 
@@ -1932,9 +1916,8 @@ static void fastrpc_glink_notify_rx(void *handle, const void *priv,
 {
 	struct smq_invoke_rsp *rsp = (struct smq_invoke_rsp *)ptr;
 	struct fastrpc_apps *me = &gfa;
-	struct smq_invoke_ctx *ctx;
-	int err = 0;
 	uint32_t index;
+	int err = 0;
 
 	VERIFY(err, (rsp && size >= sizeof(*rsp)));
 	if (err)
@@ -1955,13 +1938,6 @@ static void fastrpc_glink_notify_rx(void *handle, const void *priv,
 		goto bail;
 
 	context_notify_user(me->ctxtable[index], rsp->retval);
-	
-	ctx = (struct smq_invoke_ctx *)(uint64_to_ptr(rsp->ctx));
-	VERIFY(err, (ctx && ctx->magic == FASTRPC_CTX_MAGIC));
-	if (err)
-		goto bail;
-
-	context_notify_user(ctx, rsp->retval);
 bail:
 	if (err)
 		pr_err("adsprpc: invalid response or context\n");
@@ -2024,7 +2000,6 @@ static int fastrpc_device_release(struct inode *inode, struct file *file)
 		}
 		me->pending_free++;
 		mutex_unlock(&me->flfree_mutex);
-		mutex_destroy(&fl->map_mutex);
 		file->private_data = NULL;
 	}
 bail:
@@ -2184,7 +2159,6 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
 						me->channel[cid].ssrcount;
 		}
 	}
-	mutex_init(&fl->map_mutex);
 	spin_lock(&me->hlock);
 	hlist_add_head(&fl->hn, &me->drivers);
 	spin_unlock(&me->hlock);
