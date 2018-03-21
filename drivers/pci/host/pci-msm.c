@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2017, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2014-2018, The Linux Foundation. All rights reserved.
  * Copyright (C) 2015, Broadcom Corporation
  *
  * This program is free software; you can redistribute it and/or modify
@@ -2376,6 +2376,13 @@ static void msm_pcie_sel_debug_testcase(struct msm_pcie_dev_t *dev,
 			break;
 		}
 
+		if (((base_sel - 1) >= MSM_PCIE_MAX_RES) ||
+					(!dev->res[base_sel - 1].resource)) {
+			PCIE_DBG_FS(dev, "PCIe: RC%d Resource does not exist\n",
+								dev->rc_idx);
+			break;
+		}
+
 		PCIE_DBG_FS(dev,
 			"base: %s: 0x%p\nwr_offset: 0x%x\nwr_mask: 0x%x\nwr_value: 0x%x\n",
 			dev->res[base_sel - 1].name,
@@ -2395,6 +2402,13 @@ static void msm_pcie_sel_debug_testcase(struct msm_pcie_dev_t *dev,
 
 		break;
 	case 13: /* dump all registers of base_sel */
+		if (((base_sel - 1) >= MSM_PCIE_MAX_RES) ||
+					(!dev->res[base_sel - 1].resource)) {
+			PCIE_DBG_FS(dev, "PCIe: RC%d Resource does not exist\n",
+								dev->rc_idx);
+			break;
+		}
+
 		if (!base_sel) {
 			PCIE_DBG_FS(dev, "Invalid base_sel: 0x%x\n", base_sel);
 			break;
