@@ -2521,7 +2521,7 @@ int msm_isp_axi_reset(struct vfe_device *vfe_dev,
 			j--;
 			continue;
 		}
-        stream_info->undelivered_request_cnt = 0;
+		stream_info->undelivered_request_cnt = 0;
 		while (!list_empty(&stream_info->request_q)) {
 			queue_req = list_first_entry_or_null(
 				&stream_info->request_q,
