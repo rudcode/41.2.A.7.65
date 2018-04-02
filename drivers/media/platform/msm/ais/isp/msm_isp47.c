@@ -1031,6 +1031,7 @@ int msm_vfe47_start_fetch_engine(struct vfe_device *vfe_dev,
 			vfe_dev->buf_mgr, fe_cfg->session_id,
 			fe_cfg->stream_id);
 		vfe_dev->fetch_engine_info.bufq_handle = bufq_handle;
+
 		mutex_lock(&vfe_dev->buf_mgr->lock);
 		rc = vfe_dev->buf_mgr->ops->get_buf_by_index(
 			vfe_dev->buf_mgr, bufq_handle, fe_cfg->buf_idx, &buf);
