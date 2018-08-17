@@ -891,6 +891,10 @@ static inline int pmd_clear_huge(pmd_t *pmd)
 }
 #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
 
+#ifndef PAGE_KERNEL_EXEC
+# define PAGE_KERNEL_EXEC PAGE_KERNEL
+#endif
+
 #endif /* !__ASSEMBLY__ */
 
 #ifndef io_remap_pfn_range
