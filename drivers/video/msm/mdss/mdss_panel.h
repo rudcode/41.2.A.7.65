@@ -763,6 +763,9 @@ struct mdss_panel_info {
 	const char *panel_id_name;
 	int dsi_master;
 #endif /* CONFIG_FB_MSM_MDSS_SPECIFIC_PANEL */
+
+	/* DSI to DPI bridge usage */
+	bool use_dsi2dpi_bridge;
 };
 
 struct mdss_panel_timing {
