@@ -2436,7 +2436,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
 			goto fail;
 		}
 		area->pages[i] = page;
-		if ((gfp_mask|highmem_mask) & __GFP_WAIT)
+		if (gfp_mask & __GFP_WAIT)
 			cond_resched();
 	}
 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
