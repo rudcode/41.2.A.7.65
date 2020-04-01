@@ -1977,10 +1977,10 @@ static void group_load_in_freq_domain(struct cpumask *cpus,
 
 static int send_notification(struct rq *rq, int check_pred, int check_groups)
 {
-	unsigned int cur_freq, freq_required;
-	unsigned long flags;
+	unsigned int cur_freq = 0, freq_required = 0;
+	unsigned long flags = 0;
 	int rc = 0;
-	u64 group_load = 0, new_load;
+	u64 group_load = 0, new_load = 0;
 
 	if (!sched_enable_hmp)
 		return 0;
@@ -3496,14 +3496,14 @@ static void fixup_busy_time(struct task_struct *p, int new_cpu)
 {
 	struct rq *src_rq = task_rq(p);
 	struct rq *dest_rq = cpu_rq(new_cpu);
-	u64 wallclock;
-	u64 *src_curr_runnable_sum, *dst_curr_runnable_sum;
-	u64 *src_prev_runnable_sum, *dst_prev_runnable_sum;
-	u64 *src_nt_curr_runnable_sum, *dst_nt_curr_runnable_sum;
-	u64 *src_nt_prev_runnable_sum, *dst_nt_prev_runnable_sum;
-	int migrate_type;
+	u64 wallclock = 0;
+	u64 *src_curr_runnable_sum = NULL, *dst_curr_runnable_sum = NULL;
+	u64 *src_prev_runnable_sum = NULL, *dst_prev_runnable_sum = NULL;
+	u64 *src_nt_curr_runnable_sum = NULL, *dst_nt_curr_runnable_sum = NULL;
+	u64 *src_nt_prev_runnable_sum = NULL, *dst_nt_prev_runnable_sum = NULL;
+	int migrate_type = 0;
 	struct migration_sum_data d;
-	bool new_task;
+	bool new_task = false;
 	struct related_thread_group *grp;
 
 	if (!sched_enable_hmp || (!p->on_rq && p->state != TASK_WAKING))
@@ -3760,14 +3760,14 @@ sync_window_start(struct rq *rq, struct group_cpu_time *cpu_time)
 static void transfer_busy_time(struct rq *rq, struct related_thread_group *grp,
 				struct task_struct *p, int event)
 {
-	u64 wallclock;
+	u64 wallclock = 0;
 	struct group_cpu_time *cpu_time;
-	u64 *src_curr_runnable_sum, *dst_curr_runnable_sum;
-	u64 *src_prev_runnable_sum, *dst_prev_runnable_sum;
-	u64 *src_nt_curr_runnable_sum, *dst_nt_curr_runnable_sum;
-	u64 *src_nt_prev_runnable_sum, *dst_nt_prev_runnable_sum;
+	u64 *src_curr_runnable_sum = NULL, *dst_curr_runnable_sum = NULL;
+	u64 *src_prev_runnable_sum = NULL, *dst_prev_runnable_sum = NULL;
+	u64 *src_nt_curr_runnable_sum = NULL, *dst_nt_curr_runnable_sum = NULL;
+	u64 *src_nt_prev_runnable_sum = NULL, *dst_nt_prev_runnable_sum = NULL;
 	struct migration_sum_data d;
-	int migrate_type;
+	int migrate_type = 0;
 
 	if (!sched_freq_aggregate)
 		return;

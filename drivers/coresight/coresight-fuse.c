@@ -136,11 +136,6 @@ bool coresight_fuse_access_disabled(void)
 	dev_dbg(drvdata->dev, "config0: %lx\n", (unsigned long)config0);
 	dev_dbg(drvdata->dev, "config1: %lx\n", (unsigned long)config1);
 
-	if (drvdata->fuse_v3) {
-		config2 = fuse_readl(drvdata, OEM_CONFIG2);
-		dev_dbg(drvdata->dev, "config2: %lx\n", (unsigned long)config2);
-	}
-
 	if (drvdata->fuse_v2) {
 		if (config1 & ALL_DEBUG_DISABLE_V2)
 			ret = true;
@@ -155,6 +150,8 @@ bool coresight_fuse_access_disabled(void)
 		else if (config1 & DAP_DEVICEEN_DISABLE_V2)
 			ret = true;
 	} else if (drvdata->fuse_v3) {
+		config2 = fuse_readl(drvdata, OEM_CONFIG2);
+		dev_dbg(drvdata->dev, "config2: %lx\n", (unsigned long)config2);
 		if (config0 & ALL_DEBUG_DISABLE_V3)
 			ret = true;
 		else if (config1 & DAP_DBGEN_DISABLE_V3)
@@ -204,12 +201,6 @@ bool coresight_fuse_apps_access_disabled(void)
 	dev_dbg(drvdata->dev, "apps config0: %lx\n", (unsigned long)config0);
 	dev_dbg(drvdata->dev, "apps config1: %lx\n", (unsigned long)config1);
 
-	if (drvdata->fuse_v3) {
-		config2 = fuse_readl(drvdata, OEM_CONFIG2);
-		dev_dbg(drvdata->dev, "apps config2: %lx\n",
-		       (unsigned long)config2);
-	}
-
 	if (drvdata->fuse_v2) {
 		if (config1 & ALL_DEBUG_DISABLE_V2)
 			ret = true;
@@ -224,6 +215,9 @@ bool coresight_fuse_apps_access_disabled(void)
 		else if (config1 & DAP_DEVICEEN_DISABLE_V2)
 			ret = true;
 	} else if (drvdata->fuse_v3) {
+		config2 = fuse_readl(drvdata, OEM_CONFIG2);
+		dev_dbg(drvdata->dev, "apps config2: %lx\n",
+		       (unsigned long)config2);
 		if (config0 & ALL_DEBUG_DISABLE_V3)
 			ret = true;
 		else if (config1 & APPS_DBGEN_DISABLE_V3)

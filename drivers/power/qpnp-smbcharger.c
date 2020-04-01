@@ -994,7 +994,7 @@ static int get_prop_batt_status(struct smbchg_chip *chip)
 	bool charger_present, chg_inhibit;
 #ifdef CONFIG_QPNP_SMBCHARGER_EXTENSION
 	int i = 0;
-	int votabled, smart_votabled, other_votabled = 0;
+	int votabled, smart_votabled = 0, other_votabled = 0;
 	bool smart_charging_faked = false;
 #endif
 
@@ -5451,7 +5451,7 @@ static void increment_aicl_count(struct smbchg_chip *chip)
 
 static int wait_for_usbin_uv(struct smbchg_chip *chip, bool high)
 {
-	int rc;
+	int rc = 0;
 	int tries = 3;
 	struct completion *completion = &chip->usbin_uv_lowered;
 	bool usbin_uv;
@@ -5481,7 +5481,7 @@ static int wait_for_usbin_uv(struct smbchg_chip *chip, bool high)
 
 static int wait_for_src_detect(struct smbchg_chip *chip, bool high)
 {
-	int rc;
+	int rc = 0;
 	int tries = 3;
 	struct completion *completion = &chip->src_det_lowered;
 	bool src_detect;

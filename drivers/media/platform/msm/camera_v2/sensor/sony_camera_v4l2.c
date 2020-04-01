@@ -929,7 +929,7 @@ static int sony_util_vreg_set(struct msm_sensor_ctrl_t *s_ctrl,
 	int op_mode)
 {
 	int rc = 0;
-	struct regulator *vreg;
+	struct regulator *vreg = NULL;
 	struct device *dev = &s_ctrl->pdev->dev;
 
 	if (cmd == SONY_CAM_VDIG) {

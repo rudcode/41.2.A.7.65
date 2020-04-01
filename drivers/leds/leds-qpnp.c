@@ -4202,7 +4202,7 @@ static int qpnp_get_config_kpdbl(struct qpnp_led_data *led,
 static int qpnp_get_config_rgb(struct qpnp_led_data *led,
 				struct device_node *node)
 {
-	int rc, current_index, i;
+	int rc, current_index = 0, i;
 	u32 val, color_variation_max_num;
 	u32 *rgb_current_table;
 	u8 led_mode;

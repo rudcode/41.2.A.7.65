@@ -639,7 +639,7 @@ int mdss_dsi_panel_driver_power_on(struct mdss_panel_data *pdata)
 	struct mdss_panel_specific_pdata *spec_pdata = NULL;
 	struct mdss_panel_power_seq *pw_seq = NULL;
 	struct incell_ctrl *incell = incell_get_info();
-	unsigned char state;
+	unsigned char state = 0;
 	int ret = 0;
 	int wait;
 
@@ -1908,7 +1908,7 @@ static int mdss_dsi_panel_driver_fps_calc_rtn(
 	u32 cmds, payload;
 	struct mdss_panel_specific_pdata *spec_pdata = ctrl_pdata->spec_pdata;
 	u16 rtn;
-	int i, j, byte_cnt;
+	int i, j, byte_cnt = 0;
 	char send_rtn[sizeof(u16)] = {0};
 
 	vtotal_porch = spec_pdata->chg_fps.dric_total_porch;

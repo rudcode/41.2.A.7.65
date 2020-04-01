@@ -210,8 +210,8 @@ static void setup_alpha_pll_values(u64 a_val, u32 l_val, u32 vco_val,
 static int alpha_pll_enable(struct clk *c)
 {
 	struct alpha_pll_clk *pll = to_alpha_pll_clk(c);
-	unsigned long flags;
-	int rc;
+	unsigned long flags = 0;
+	int rc = 0;
 
 	if (unlikely(!pll->inited))
 		__init_alpha_pll(c);
@@ -230,8 +230,8 @@ static int __calibrate_alpha_pll(struct alpha_pll_clk *pll);
 static int dyna_alpha_pll_enable(struct clk *c)
 {
 	struct alpha_pll_clk *pll = to_alpha_pll_clk(c);
-	unsigned long flags;
-	int rc;
+	unsigned long flags = 0;
+	int rc = 0;
 
 	if (unlikely(!pll->inited))
 		__init_alpha_pll(c);
@@ -325,7 +325,7 @@ static void __alpha_pll_disable(struct alpha_pll_clk *pll)
 static void alpha_pll_disable(struct clk *c)
 {
 	struct alpha_pll_clk *pll = to_alpha_pll_clk(c);
-	unsigned long flags;
+	unsigned long flags = 0;
 
 	spin_lock_irqsave(&alpha_pll_reg_lock, flags);
 	if (pll->fsm_en_mask)
@@ -338,7 +338,7 @@ static void alpha_pll_disable(struct clk *c)
 static void dyna_alpha_pll_disable(struct clk *c)
 {
 	struct alpha_pll_clk *pll = to_alpha_pll_clk(c);
-	unsigned long flags;
+	unsigned long flags = 0;
 
 	spin_lock_irqsave(&alpha_pll_reg_lock, flags);
 	if (pll->fsm_en_mask)
@@ -466,9 +466,9 @@ static int alpha_pll_set_rate(struct clk *c, unsigned long rate);
 static int dyna_alpha_pll_set_rate(struct clk *c, unsigned long rate)
 {
 	struct alpha_pll_clk *pll = to_alpha_pll_clk(c);
-	unsigned long freq_hz, flags;
-	u32 l_val, vco_val;
-	u64 a_val;
+	unsigned long freq_hz, flags = 0;
+	u32 l_val = 0, vco_val = 0;
+	u64 a_val = 0;
 	int ret;
 
 	freq_hz = round_rate_up(pll, rate, &l_val, &a_val);
@@ -595,10 +595,10 @@ static int alpha_pll_set_rate(struct clk *c, unsigned long rate)
 {
 	struct alpha_pll_clk *pll = to_alpha_pll_clk(c);
 	struct alpha_pll_masks *masks = pll->masks;
-	unsigned long flags, freq_hz;
-	u32 regval, l_val;
-	int vco_val;
-	u64 a_val;
+	unsigned long flags = 0, freq_hz;
+	u32 regval = 0, l_val = 0;
+	int vco_val = 0;
+	u64 a_val = 0;
 
 	freq_hz = round_rate_up(pll, rate, &l_val, &a_val);
 	if (freq_hz != rate) {
@@ -912,8 +912,8 @@ static int __fabia_alpha_pll_enable(struct alpha_pll_clk *pll)
 static int fabia_alpha_pll_enable(struct clk *c)
 {
 	struct alpha_pll_clk *pll = to_alpha_pll_clk(c);
-	unsigned long flags;
-	int rc;
+	unsigned long flags = 0;
+	int rc = 0;
 
 	spin_lock_irqsave(&alpha_pll_reg_lock, flags);
 	if (pll->fsm_en_mask)
@@ -951,7 +951,7 @@ static void __fabia_alpha_pll_disable(struct alpha_pll_clk *pll)
 static void fabia_alpha_pll_disable(struct clk *c)
 {
 	struct alpha_pll_clk *pll = to_alpha_pll_clk(c);
-	unsigned long flags;
+	unsigned long flags = 0;
 
 	spin_lock_irqsave(&alpha_pll_reg_lock, flags);
 	if (pll->fsm_en_mask)
@@ -964,9 +964,9 @@ static void fabia_alpha_pll_disable(struct clk *c)
 static int fabia_alpha_pll_set_rate(struct clk *c, unsigned long rate)
 {
 	struct alpha_pll_clk *pll = to_alpha_pll_clk(c);
-	unsigned long flags, freq_hz;
-	u32 l_val;
-	u64 a_val;
+	unsigned long flags = 0, freq_hz;
+	u32 l_val = 0;
+	u64 a_val = 0;
 
 	freq_hz = round_rate_up(pll, rate, &l_val, &a_val);
 	if (freq_hz > rate + FABIA_RATE_MARGIN || freq_hz < rate) {

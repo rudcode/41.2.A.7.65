@@ -153,7 +153,7 @@ static int mhi_pci_probe(struct pci_dev *pcie_device,
 	u32 slot = PCI_SLOT(pcie_device->devfn);
 	unsigned long msi_requested, msi_required;
 	struct msm_pcie_register_event *mhi_pci_link_event;
-	struct pcie_core_info *core;
+	struct pcie_core_info *core = NULL;
 	int i;
 	char node[32];
 
@@ -509,7 +509,7 @@ static int __exit mhi_plat_remove(struct platform_device *pdev)
 
 static int __init mhi_init(void)
 {
-	int r;
+	int r = -ENOMEM;
 	struct mhi_device_driver *mhi_dev_drv;
 
 	mhi_dev_drv = kmalloc(sizeof(*mhi_dev_drv), GFP_KERNEL);

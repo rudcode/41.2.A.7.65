@@ -45,7 +45,7 @@ static int bhi_alloc_bhie_xfer(struct mhi_device_ctxt *mhi_dev_ctxt,
 	int segments = DIV_ROUND_UP(size, seg_size) + 1;
 	int i;
 	struct scatterlist *sg_list;
-	struct bhie_mem_info *bhie_mem_info, *info;
+	struct bhie_mem_info *bhie_mem_info, *info = NULL;
 
 	mhi_log(mhi_dev_ctxt, MHI_MSG_INFO,
 		"Total size:%lu total_seg:%d seg_size:%lu\n",
@@ -83,18 +83,20 @@ static int bhi_alloc_bhie_xfer(struct mhi_device_ctxt *mhi_dev_ctxt,
 			i, info->dma_handle, info->phys_addr);
 	}
 
-	sg_init_table(sg_list, segments);
-	sg_set_buf(sg_list, info->aligned, info->size);
-	sg_dma_address(sg_list) = info->phys_addr;
-	sg_dma_len(sg_list) = info->size;
-	vec_table->sg_list = sg_list;
-	vec_table->bhie_mem_info = bhie_mem_info;
-	vec_table->bhi_vec_entry = info->aligned;
-	vec_table->segment_count = segments;
+	if(info) {
+		sg_init_table(sg_list, segments);
+		sg_set_buf(sg_list, info->aligned, info->size);
+		sg_dma_address(sg_list) = info->phys_addr;
+		sg_dma_len(sg_list) = info->size;
+		vec_table->sg_list = sg_list;
+		vec_table->bhie_mem_info = bhie_mem_info;
+		vec_table->bhi_vec_entry = info->aligned;
+		vec_table->segment_count = segments;
 
-	mhi_log(mhi_dev_ctxt, MHI_MSG_INFO,
-		"BHI/E table successfully allocated\n");
-	return 0;
+		mhi_log(mhi_dev_ctxt, MHI_MSG_INFO,
+			"BHI/E table successfully allocated\n");
+		return 0;
+	}
 
 alloc_dma_error:
 	for (i = i - 1; i >= 0; i--)

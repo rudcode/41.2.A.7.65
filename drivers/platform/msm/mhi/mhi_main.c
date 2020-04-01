@@ -904,7 +904,7 @@ int mhi_queue_xfer(struct mhi_client_handle *client_handle,
 {
 	int r;
 	enum dma_data_direction dma_dir;
-	struct mhi_buf_info *bb;
+	struct mhi_buf_info *bb = NULL;
 	struct mhi_device_ctxt *mhi_dev_ctxt;
 	u32 chan;
 	unsigned long flags;
@@ -1789,7 +1789,7 @@ int mhi_register_device(struct mhi_device *mhi_device,
 	u32 slot = PCI_SLOT(pci_dev->devfn);
 	int ret, i;
 	char node[32];
-	struct pcie_core_info *core;
+	struct pcie_core_info *core = NULL;
 
 	of_node = of_parse_phandle(mhi_device->dev->of_node, node_name, 0);
 	if (!of_node)

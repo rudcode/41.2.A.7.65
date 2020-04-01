@@ -1081,6 +1081,7 @@ static void process_rs232_state(struct uci_client *ctrl_client,
 	u32 chan;
 
 	mutex_lock(&uci_ctxt->ctrl_mutex);
+	rs232_pkt = result->buf_addr;
 	if (result->transaction_status != 0) {
 		uci_log(mhi_uci_drv_ctxt.mhi_uci_ipc_log, UCI_DBG_ERROR,
 			"Non successful transfer code 0x%x\n",
@@ -1094,7 +1095,7 @@ static void process_rs232_state(struct uci_client *ctrl_client,
 			sizeof(struct rs232_ctrl_msg));
 		goto error_size;
 	}
-	rs232_pkt = result->buf_addr;
+
 	MHI_GET_CTRL_DEST_ID(CTRL_DEST_ID, rs232_pkt, chan);
 	for (i = 0; i < MHI_SOFTWARE_CLIENT_LIMIT; i++)
 		if (chan == uci_ctxt->client_handles[i].out_attr.chan_id ||

@@ -601,8 +601,8 @@ static void z3fold_free(struct z3fold_pool *pool, unsigned long handle)
 static int z3fold_reclaim_page(struct z3fold_pool *pool, unsigned int retries)
 {
 	int i, ret = 0, freechunks;
-	struct z3fold_header *zhdr;
-	struct page *page;
+	struct z3fold_header *zhdr = NULL;
+	struct page *page = NULL;
 	unsigned long first_handle = 0, middle_handle = 0, last_handle = 0;
 
 	spin_lock(&pool->lock);

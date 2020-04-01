@@ -123,7 +123,7 @@ EXPORT_SYMBOL(msm_dump_data_register);
 int dump_table_ramdump_setup(void)
 {
 	char data[32];
-	int count;
+	int count = 0;
 
 	snprintf(data, sizeof(data), "0x%lx",
 			(unsigned long) memdump.table_phys);

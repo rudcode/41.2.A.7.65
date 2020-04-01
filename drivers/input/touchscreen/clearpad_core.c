@@ -517,7 +517,7 @@ enum clearpad_flash_command_e {
 	SYN_DEFAULT_FLASH,
 };
 
-static const char * const clearpad_flash_command_name[] = {
+static const char * clearpad_flash_command_name[] = {
 	[SYN_FORCE_FLASH]	= "force",
 	[SYN_CONFIG_FLASH]	= "config",
 	[SYN_DEFAULT_FLASH]	= "default",
@@ -4937,11 +4937,11 @@ end:
 static int clearpad_do_calibration(struct clearpad_t *this, int mode,
 				   u8 calibration_crc)
 {
-	unsigned long timeout;
+	unsigned long timeout = 0;
 	int rc = 0;
 	int reset_rc = 0;
-	bool calibrate;
-	u8 status, bit, need_bit;
+	bool calibrate = false;
+	u8 status = 0, bit = 0, need_bit = 0;
 
 	switch (mode) {
 	case SYN_CALIBRATION_NORMAL:
@@ -8729,7 +8729,7 @@ static int clearpad_probe(struct platform_device *pdev)
 	int rc;
 	bool retry = false;
 #ifdef CONFIG_TOUCHSCREEN_CLEARPAD_RMI_DEV
-	struct platform_device *rmi_dev;
+	struct platform_device *rmi_dev = NULL;
 #endif
 	this = devm_kzalloc(&pdev->dev, sizeof(struct clearpad_t), GFP_KERNEL);
 	if (!this) {

@@ -4563,7 +4563,7 @@ static void wcd9xxx_cleanup_debugfs(struct wcd9xxx_mbhc *mbhc)
 
 int wcd9xxx_mbhc_set_keycode(struct wcd9xxx_mbhc *mbhc)
 {
-	enum snd_jack_types type;
+	enum snd_jack_types type = 0;
 	int i, ret, result = 0;
 	int *btn_key_code;
 

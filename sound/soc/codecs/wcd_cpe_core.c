@@ -2992,7 +2992,22 @@ static int wcd_cpe_send_param_snd_model(struct wcd_cpe_core *core,
 	struct cpe_lsm_session *session, struct cpe_lsm_ids *ids)
 {
 	int ret = 0;
-	struct cmi_obm_msg obm_msg;
+	struct cmi_obm_msg obm_msg = {
+		.hdr = {
+			.hdr_info = 0, 
+			.pld_info = 0, 
+			.opcode = 0
+		},
+		.pld = {
+			.version = 0,
+			.size = 0, 
+			.data_ptr = {
+				.msw_lsw = 0,
+				.kvaddr = NULL
+			},
+			.mem_handle = 0
+		}
+	};
 	struct cpe_param_data *param_d;
 
 
@@ -3257,7 +3272,22 @@ static int wcd_cpe_lsm_reg_snd_model(void *core_handle,
 				 bool detect_failure)
 {
 	int ret = 0;
-	struct cmi_obm_msg obm_msg;
+	struct cmi_obm_msg obm_msg = {
+		.hdr = {
+			.hdr_info = 0, 
+			.pld_info = 0, 
+			.opcode = 0
+		},
+		.pld = {
+			.version = 0,
+			.size = 0, 
+			.data_ptr = {
+				.msw_lsw = 0,
+				.kvaddr = NULL
+			},
+			.mem_handle = 0
+		}
+	};
 	struct wcd_cpe_core *core = core_handle;
 
 	ret = wcd_cpe_is_valid_lsm_session(core, session,
@@ -3642,7 +3672,28 @@ static int wcd_cpe_lsm_lab_control(
 {
 	struct wcd_cpe_core *core = core_handle;
 	int ret = 0, pld_size = CPE_PARAM_SIZE_LSM_LAB_CONTROL;
-	struct cpe_lsm_control_lab cpe_lab_enable;
+	struct cpe_lsm_control_lab cpe_lab_enable = {
+		.hdr = {
+			.hdr_info = 0, 
+			.pld_info = 0, 
+			.opcode = 0
+		}, 
+		.lab_enable = {
+			.param = {
+				.module_id = 0,
+				.param_id = 0,
+				.p_size = {
+					.param_size = 0,
+					.sr = {
+						.param_size = 0,
+						.reserved = 0
+					}
+				}
+			},
+			.enable = 0,
+			.reserved = 0
+		}
+	};
 	struct cpe_lsm_lab_enable *lab_enable = &cpe_lab_enable.lab_enable;
 	struct cpe_param_data *param_d = &lab_enable->param;
 	struct cpe_lsm_ids ids;
@@ -4217,7 +4268,22 @@ static int wcd_cpe_send_afe_cal(void *core_handle,
 
 	struct cal_block_data *afe_cal = NULL;
 	struct wcd_cpe_core *core = core_handle;
-	struct cmi_obm_msg obm_msg;
+	struct cmi_obm_msg obm_msg = {
+		.hdr = {
+			.hdr_info = 0, 
+			.pld_info = 0, 
+			.opcode = 0
+		},
+		.pld = {
+			.version = 0,
+			.size = 0, 
+			.data_ptr = {
+				.msw_lsw = 0,
+				.kvaddr = NULL
+			},
+			.mem_handle = 0
+		}
+	};
 	void *inb_msg = NULL;
 	void *msg;
 	int rc = 0;

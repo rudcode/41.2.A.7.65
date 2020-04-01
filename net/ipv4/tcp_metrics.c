@@ -228,7 +228,8 @@ static struct tcp_metrics_block *__tcp_get_metrics_req(struct request_sock *req,
 						       struct dst_entry *dst)
 {
 	struct tcp_metrics_block *tm;
-	struct inetpeer_addr saddr, daddr;
+	struct inetpeer_addr saddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0},
+						daddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0};
 	unsigned int hash;
 	struct net *net;
 
@@ -267,7 +268,8 @@ static struct tcp_metrics_block *__tcp_get_metrics_req(struct request_sock *req,
 static struct tcp_metrics_block *__tcp_get_metrics_tw(struct inet_timewait_sock *tw)
 {
 	struct tcp_metrics_block *tm;
-	struct inetpeer_addr saddr, daddr;
+	struct inetpeer_addr saddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0},
+						daddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0};
 	unsigned int hash;
 	struct net *net;
 
@@ -315,7 +317,8 @@ static struct tcp_metrics_block *tcp_get_metrics(struct sock *sk,
 						 bool create)
 {
 	struct tcp_metrics_block *tm;
-	struct inetpeer_addr saddr, daddr;
+	struct inetpeer_addr saddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0},
+						daddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0};
 	unsigned int hash;
 	struct net *net;
 
@@ -968,7 +971,8 @@ static int parse_nl_saddr(struct genl_info *info, struct inetpeer_addr *addr)
 static int tcp_metrics_nl_cmd_get(struct sk_buff *skb, struct genl_info *info)
 {
 	struct tcp_metrics_block *tm;
-	struct inetpeer_addr saddr, daddr;
+	struct inetpeer_addr saddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0},
+						daddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0};
 	unsigned int hash;
 	struct sk_buff *msg;
 	struct net *net = genl_info_net(info);
@@ -1054,7 +1058,8 @@ static int tcp_metrics_nl_cmd_del(struct sk_buff *skb, struct genl_info *info)
 	struct tcpm_hash_bucket *hb;
 	struct tcp_metrics_block *tm;
 	struct tcp_metrics_block __rcu **pp;
-	struct inetpeer_addr saddr, daddr;
+	struct inetpeer_addr saddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0},
+						daddr = {.addr = {.a4 = 0, .a6 = {0, 0, 0, 0}}, .family = 0};
 	unsigned int hash;
 	struct net *net = genl_info_net(info);
 	int ret;
