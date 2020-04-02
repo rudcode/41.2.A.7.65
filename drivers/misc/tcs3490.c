@@ -1345,6 +1345,9 @@ static int tcs3490_probe(struct i2c_client *client,
 			"%s: check functionality failed", __func__);
 		return -EIO;
 	}
+	chip = kzalloc(sizeof(struct tcs3490_chip), GFP_KERNEL);
+	if (!chip)
+		return -ENOMEM;
 	dev_info(&client->dev, "tcs3490: Checking IRQ number %d\n",
 		client->irq);
 	if (client->irq < 0) {
@@ -1355,9 +1358,6 @@ static int tcs3490_probe(struct i2c_client *client,
 		dev_info(&client->dev, "%s: client->irq = %d\n",
 			__func__, client->irq);
 	}
-	chip = kzalloc(sizeof(struct tcs3490_chip), GFP_KERNEL);
-	if (!chip)
-		return -ENOMEM;
 	i2c_set_clientdata(client, chip);
 	chip->client = client;
 	chip->device_index = 0; /*use default*/
@@ -1409,6 +1409,7 @@ static int tcs3490_probe(struct i2c_client *client,
 		dev_err(&client->dev,
 		"%s: failed to allocate input device", __func__);
 		kfree(chip);
+		return rc;
 	}
 	chip->a_idev->name = "AMS TCS3490 Sensor";
 
@@ -1459,6 +1460,7 @@ init_failed:
 	if (chip->vdd)
 		regulator_put(chip->vdd);
 	dev_err(&client->dev, "Probe failed.\n");
+	kfree(chip);
 	return rc;
 
 exit_unregister_dev_ps:
