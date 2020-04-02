@@ -1872,7 +1872,7 @@ static ssize_t somc_chg_therm_store_tb(struct device *dev,
 
 	memset(therm, 0x00, size * sizeof(int));
 	for (i = 0; (tok = strsep(&sp, ",")) != NULL && i < size; i++) {
-		if (tok != '\0') {
+		if (tok[i] != '\0') {
 			rc = kstrtol(tok, 10, &param);
 			if (rc) {
 				pr_err("Invalid parameter\n");

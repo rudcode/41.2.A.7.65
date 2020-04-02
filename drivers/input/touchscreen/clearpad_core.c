@@ -367,7 +367,7 @@ enum clearpad_state_e {
 	SYN_STATE_DISABLED,
 };
 
-static const char * const clearpad_state_name[] = {
+static const char * clearpad_state_name[] = {
 	[SYN_STATE_INIT]		= "init",
 	[SYN_STATE_RUNNING]		= "running",
 	[SYN_STATE_FLASH_IMAGE_SET]	= "flash image set",
@@ -386,7 +386,7 @@ enum clearpad_chip_e {
 	SYN_CHIP_332U	= 0x40, /* Full incell */
 };
 
-static const char * const clearpad_chip_name[] = {
+static const char * clearpad_chip_name[] = {
 	[SYN_CHIP_3500]	= "S3500",
 	[SYN_CHIP_3330]	= "S3330", /* Hybrid incell */
 	[SYN_CHIP_332U]	= "S332U", /* Full incell */
@@ -420,7 +420,7 @@ enum clearpad_reg_type_e {
 	SYN_TYPE_END,
 };
 
-static const char * const clearpad_flash_status_name[] = {
+static const char * clearpad_flash_status_name[] = {
 	[STATUS_FLASH_STATUS_SUCCESS]
 		= "Success",
 	[STATUS_FLASH_STATUS_DEVICE_NOT_IN_BOOTLOADER_MODE]
@@ -444,8 +444,8 @@ static const char * const clearpad_flash_status_name[] = {
 	[STATUS_FLASH_STATUS_FLASH_HARDWARE_FAILURE]
 		= "Flash Hardware Failure",
 };
-
-static const char * const clearpad_flash_reason_name[] = {
+/*
+static const char * clearpad_flash_reason_name[] = {
 	[DEVICE_STATUS_CODE_CONFIGURATION_CRC_FAILURE]
 				= "Configuration CRC Failure",
 	[DEVICE_STATUS_CODE_FIRMWARE_CRC_FAILURE]
@@ -453,7 +453,7 @@ static const char * const clearpad_flash_reason_name[] = {
 	[DEVICE_STATUS_CODE_CRC_IN_PROGRESS]
 				= "CRC In Progress",
 };
-
+*/
 enum clearpad_firmware_e {
 	HEADER_VERSION_OFFSET		= 0x07,
 	HEADER_PRODUCT_ID_SIZE		= 10,
@@ -528,7 +528,7 @@ enum clearpad_calibration_e {
 	SYN_CALIBRATION_EW,
 };
 
-static const char * const clearpad_calibration_name[] = {
+static const char * clearpad_calibration_name[] = {
 	[SYN_CALIBRATION_NORMAL] = "normal calibration",
 	[SYN_CALIBRATION_EW] = "EW calibration",
 };
@@ -586,7 +586,7 @@ enum clearpad_reset_e {
 	SYN_FORCE_SWRESET,
 };
 
-static const char * const clearpad_reset_name[] = {
+static const char * clearpad_reset_name[] = {
 	[SYN_HWRESET]	= "HW reset",
 	[SYN_SWRESET]	= "SW reset",
 	[SYN_FORCE_HWRESET]	= "Force HW reset",
@@ -3888,7 +3888,7 @@ static void clearpad_funcarea_initialize(struct clearpad_t *this)
 	struct clearpad_area_t pointer_area;
 	struct clearpad_button_data_t *button;
 	struct clearpad_pointer_data_t *pointer_data;
-	static const char const *func_name[] = {
+	static const char *func_name[] = {
 		[SYN_FUNCAREA_INSENSIBLE] = "insensible",
 		[SYN_FUNCAREA_POINTER] = "pointer",
 		[SYN_FUNCAREA_BUTTON] = "button",

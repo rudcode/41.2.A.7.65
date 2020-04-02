@@ -2668,8 +2668,8 @@ static int msm_cpe_lsm_ioctl_compat(struct snd_pcm_substream *substream,
 					__func__,
 					"SNDRV_LSM_EVENT_STATUS_V3_32",
 					err);
-				kfree(event_status);
-				goto done;
+			kfree(event_status);
+			goto done;
 		}
 
 		if (!err) {
